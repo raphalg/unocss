@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'custom'
+
+jobs:
+  release-webpack:
+    permissions:
+      id-token: write
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Set node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install Dependencies
+        run: pnpm i
+
+      - name: PNPM build
+        working-directory: ./packages/webpack
+        run: pnpm run build
+
+      - name: Publish to NPM
+        run: pnpm publish --access restricted --no-git-checks
+        working-directory: ./packages/webpack
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
