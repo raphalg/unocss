@@ -54,8 +54,8 @@ export default function WebpackPlugin<Theme extends object>(
     }
 
     // TODO: detect webpack's watch mode and enable watcher
-    // Workaround : Allow user to pass shouldWatch as plugin config
-    tasks.push(setupContentExtractor(ctx, typeof configOrPath === 'object' && configOrPath?.shouldWatch))
+    // Workaround : Allow user to pass shouldWatch as plugin config only in dev mode
+    tasks.push(setupContentExtractor(ctx, process.env.NODE_ENV?.startsWith('dev') && typeof configOrPath === 'object' && configOrPath?.shouldWatch))
 
     const entries = new Set<string>()
     const hashes = new Map<string, string>()
