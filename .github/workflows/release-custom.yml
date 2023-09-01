@@ -1,9 +1,10 @@
 name: Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - 'custom'
+      - custom
 
 jobs:
   release-webpack:
